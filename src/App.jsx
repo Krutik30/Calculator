@@ -1,16 +1,16 @@
-import { useState } from 'react'
-import './App.css'
-import Bcomponent from './component/buttons';
-import Keys from './component/keys';
+import Calculator from "./component/Calculator";
+import Display from "./component/display";
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-      <div>
-        <Keys />
-      </div>
-    );
+    <div className="App">
+        <div className="calculator-wrapper">
+            <Display />
+            <Calculator />
+        </div>
+    </div>
+  )
 }
 
-export default App
+export default App;
