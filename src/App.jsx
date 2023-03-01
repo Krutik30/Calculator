@@ -1,14 +1,13 @@
-import Calculator from "./component/Calculator";
-import Display from "./component/display";
+import { useState } from "react";
+import Calc from "./component/Calc";
 
 function App() {
 
+  
+
   return (
     <div className="App">
-        <div className="calculator-wrapper">
-            <Display />
-            <Calculator />
-        </div>
+        <Calc />
     </div>
   )
 }
