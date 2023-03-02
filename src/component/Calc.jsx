@@ -46,12 +46,19 @@ function Calc(){
         const array = display.split(' ');
         const lastElement = array[array.length - 1];
 
-        if(!lastElement.include('.')){
+        if(!lastElement.includes('.')){
             setDisplay({
                 ...display,
                 express: display.express + '.'
             })
         }
+    }
+
+    function handleClear(){
+        setDisplay({
+            ...display,
+            express : "0"
+        });
     }
 
 
@@ -63,7 +70,7 @@ function Calc(){
                 <input className="exp-in" autoFocus onChange={handleChange} name="input" type="text" />
             </div>
             <div className="keys">
-                <button onClick={handleClick} className="key" id="clear" name="AC">AC</button>
+                <button onClick={handleClear} className="key" id="clear" name="AC">AC</button>
                 <button onClick={handleOperator} className="key" id="mul" name="*">*</button>
                 <button onClick={handleOperator} className="key" id="divide" name="/">/</button>
                 <button onClick={handleClick} className="key" id="seven" name="7">7</button>
