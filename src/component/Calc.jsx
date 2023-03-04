@@ -1,93 +1,109 @@
 import { useState } from "react";
+import Display from "./Display";
+import Evaluator from "./Evalution";
+import Keys from "./Keys";
 
 function Calc(){
 
-    const [display , setDisplay] = useState({
-        express: "0",
-        valid: true,
-    });
+    const [display, setDisplay] = useState({
+        expression: '0',
+        answer: '0',
+        validExpression: true,
+        decimalPossible: true
+    })
 
-    function barabar(){
+    function handleKey(event){
+        let keyPressed = event.target.name;
 
-
-        setDisplay({
-            ...display,
-            express: eval(display.express)
-        })
-    }
-
-    function handleClick(event){
-        if(display.express === '0'){
+        if(keyPressed === 'AC'){
+            setDisplay({
+                expression: '0',
+                answer: '0',
+                validExpression: true,
+                decimalPossible: true
+            })
+        }
+        else if(keyPressed === '='){
+            let finalAnswer = Evaluator(display.expression);
             setDisplay({
                 ...display,
-                express: event.target.textContent
+                expression: finalAnswer,
+                answer: finalAnswer
             })
+        }
+        else if(keyPressed === '.'){
+            if(display.decimalPossible){
+                setDisplay({
+                    validExpression: false,
+                    expression: display.expression + keyPressed,
+                    answer: display.expression + keyPressed,
+                    decimalPossible: false
+                })
+            }
+        }
+        else if(keyPressed === '+' || keyPressed === '-' || keyPressed === '*' || keyPressed === '/'){
+            let lastCharacter = display.expression[display.expression.length - 1];
+            if(/[+|/|*|-]/.test(lastCharacter)){
+                if(keyPressed === '-'){
+                    setDisplay({
+                        validExpression: false,
+                        expression: display.expression + keyPressed,
+                        answer: display.expression + keyPressed,
+                        decimalPossible: true
+                    })
+                }
+                else {
+                    //Checking if it has two expressions 
+                    if (/[+|/|*|-]/.test(display.expression[display.expression.length - 2])) {
+                        setDisplay({
+                            validExpression: false,
+                            expression: display.expression.slice(0, display.expression.length - 2) + keyPressed,
+                            answer: display.expression.slice(0, display.expression.length - 2) + keyPressed,
+                            decimalPossible: true
+                        })
+                    }
+                    else {
+                        setDisplay({
+                            validExpression: false,
+                            expression: display.expression.slice(0, display.expression.length - 1) + keyPressed,
+                            answer: display.expression.slice(0, display.expression.length - 1) + keyPressed,
+                            decimalPossible: true
+                        })
+                    }
+                }
+            }
+            else if(display.expression[display.expression.length - 1] === '.'){
+                return;
+            }else{
+                setDisplay({
+                    validExpression: false,
+                    expression: display.expression + keyPressed,
+                    answer: display.expression + keyPressed,
+                    decimalPossible: true
+                })
+            }
         }else{
-            setDisplay({
-                ...display,
-                express: display.express + event.target.textContent
-            })
+            if (display.expression === '0') {
+                setDisplay({
+                    validExpression: true,
+                    expression: keyPressed,
+                    answer: keyPressed
+                })
+            }
+            else {
+                setDisplay({
+                    validExpression: true,
+                    expression: display.expression + keyPressed,
+                    answer: display.expression + keyPressed
+                })
+            }
         }
     }
 
-    function handleOperator(event){
-        setDisplay({
-            ...display,
-            express: display.express + ' ' + event.target.textContent + ' '
-        })
-    }
-
-    function handleChange(){
-
-    }
-
-    function handleDecimal(){
-        
-        const array = display.split(' ');
-        const lastElement = array[array.length - 1];
-
-        if(!lastElement.includes('.')){
-            setDisplay({
-                ...display,
-                express: display.express + '.'
-            })
-        }
-    }
-
-    function handleClear(){
-        setDisplay({
-            ...display,
-            express : "0"
-        });
-    }
-
-
-    return (
-        <div className="calculator-wrapper">
-            <div className="display-box">
-                <div className="display" >{display.express}</div>
-                <hr />
-                <input className="exp-in" autoFocus onChange={handleChange} name="input" type="text" />
-            </div>
-            <div className="keys">
-                <button onClick={handleClear} className="key" id="clear" name="AC">AC</button>
-                <button onClick={handleOperator} className="key" id="mul" name="*">*</button>
-                <button onClick={handleOperator} className="key" id="divide" name="/">/</button>
-                <button onClick={handleClick} className="key" id="seven" name="7">7</button>
-                <button onClick={handleClick} className="key" id="eight" name="8">8</button>
-                <button onClick={handleClick} className="key" id="nine" name="9">9</button>
-                <button onClick={handleOperator} className="key" id="minus" name="-">-</button>
-                <button onClick={handleClick} className="key" id="four" name="4">4</button>
-                <button onClick={handleClick} className="key" id="five" name="5">5</button>
-                <button onClick={handleClick} className="key" id="six" name="6">6</button>
-                <button onClick={handleOperator} className="key" id="plus" name="+">+</button>
-                <button onClick={handleClick} className="key" id="one" name="1">1</button>
-                <button onClick={handleClick} className="key" id="two" name="2">2</button>
-                <button onClick={handleClick} className="key" id="three" name="3">3</button>
-                <button onClick={barabar} className="key" id="equal" name="=">=</button>
-                <button onClick={handleClick} className="key" id="zero" name="0">0</button>
-                <button onClick={handleDecimal} className="key" id="dot" name="dot">.</button>
-            </div>
+    return(
+        <div className="Calc">
+            <Display props={display} />
+            <Keys validExpression={display.validExpression} handleKey={handleKey} />
         </div>
     )
 }
