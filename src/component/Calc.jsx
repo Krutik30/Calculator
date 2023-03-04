@@ -23,9 +23,8 @@ function Calc(){
                 setAnswer(answer+k);
             }
 
-            const l = answer.length;
 
-            if(lastChar === '=' ){
+            if(k === 'AC'){
                 setLongS("0");
                 setShortS("");
                 setLastChar("");
@@ -33,13 +32,24 @@ function Calc(){
                 setHasDot(false);
                 setHasMinus(false);
             }
-            else if(k === 'AC'){
-                setLongS("0");
-                setShortS("");
-                setLastChar("");
-                setAnswer("0");
-                setHasDot(false);
-                setHasMinus(false);
+            else if(lastChar === '=' ){
+                if(codeNumber.includes(k)){
+                    if(k !== "AC"){
+                        setLongS(k);
+                        setShortS(k);
+                        setAnswer(k);
+                    }
+                    setLastChar("");
+                    setHasDot(false);
+                    setHasMinus(false);
+                }
+                else if(codeOperator.includes(k)){
+                    if(k !== "AC"){
+                        setLongS(longS+k);
+                        setShortS(longS+k);
+                        setAnswer(longS+k);
+                    }
+                }
             }
             else if(longS === '0'){
                 setLongS(k);
@@ -73,10 +83,13 @@ function Calc(){
             }
             else if(codeOperator.includes(k)){
                 // console.log(k);
+                const l = answer.length;
+                let secLast = answer[l-2];
                 if(codeNumber.includes(lastChar)){
                     setting(k);
                 }
-                else if(codeOperator.includes(lastChar)){
+                else if(codeOperator.includes(secLast)){
+                    console.log(l);
                     setLongS(longS+k);
                     setShortS(shortS+k);
                     setAnswer(answer.slice(0,l-2)+k);
