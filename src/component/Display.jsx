@@ -2,9 +2,9 @@ function Display(props){
 
     return(
         <div className="Display">
-            <p className="text-display expression">{props.props.expression}</p>
+            <p className="text-display expression">{props.answer}</p>
             <hr />
-            <p className="text-display" id="display">{props.props.answer}</p>
+            <p className="text-display" id="display">{props.longS}</p>
         </div>
     )
 }

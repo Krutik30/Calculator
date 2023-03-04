@@ -1,109 +1,107 @@
 import { useState } from "react";
 import Display from "./Display";
-import Evaluator from "./Evalution";
 import Keys from "./Keys";
 
 function Calc(){
 
-    const [display, setDisplay] = useState({
-        expression: '0',
-        answer: '0',
-        validExpression: true,
-        decimalPossible: true
-    })
+    const [longS , setLongS] = useState("0");
+    const [shortS , setShortS] = useState("");
+    const [lastChar , setLastChar] = useState("");
+    const [answer , setAnswer] = useState("0");
+    const [hasDot , setHasDot] = useState(false);
+    const [hasMinus , setHasMinus] = useState(false);
 
     function handleKey(event){
-        let keyPressed = event.target.name;
 
-        if(keyPressed === 'AC'){
-            setDisplay({
-                expression: '0',
-                answer: '0',
-                validExpression: true,
-                decimalPossible: true
-            })
-        }
-        else if(keyPressed === '='){
-            let finalAnswer = Evaluator(display.expression);
-            setDisplay({
-                ...display,
-                expression: finalAnswer,
-                answer: finalAnswer
-            })
-        }
-        else if(keyPressed === '.'){
-            if(display.decimalPossible){
-                setDisplay({
-                    validExpression: false,
-                    expression: display.expression + keyPressed,
-                    answer: display.expression + keyPressed,
-                    decimalPossible: false
-                })
+        const k = event.target.name;
+        const codeNumber = ['0','1','2','3','4','5','6','7','8','9'];
+        const codeOperator = ['+','*','/','-'];
+
+            function setting(k){
+                setLongS(longS+k);
+                setShortS(shortS + k);
+                setAnswer(answer+k);
             }
-        }
-        else if(keyPressed === '+' || keyPressed === '-' || keyPressed === '*' || keyPressed === '/'){
-            let lastCharacter = display.expression[display.expression.length - 1];
-            if(/[+|/|*|-]/.test(lastCharacter)){
-                if(keyPressed === '-'){
-                    setDisplay({
-                        validExpression: false,
-                        expression: display.expression + keyPressed,
-                        answer: display.expression + keyPressed,
-                        decimalPossible: true
-                    })
-                }
-                else {
-                    //Checking if it has two expressions 
-                    if (/[+|/|*|-]/.test(display.expression[display.expression.length - 2])) {
-                        setDisplay({
-                            validExpression: false,
-                            expression: display.expression.slice(0, display.expression.length - 2) + keyPressed,
-                            answer: display.expression.slice(0, display.expression.length - 2) + keyPressed,
-                            decimalPossible: true
-                        })
-                    }
-                    else {
-                        setDisplay({
-                            validExpression: false,
-                            expression: display.expression.slice(0, display.expression.length - 1) + keyPressed,
-                            answer: display.expression.slice(0, display.expression.length - 1) + keyPressed,
-                            decimalPossible: true
-                        })
-                    }
+
+            const l = answer.length;
+
+            if(lastChar === '=' ){
+                setLongS("0");
+                setShortS("");
+                setLastChar("");
+                setAnswer("0");
+                setHasDot(false);
+                setHasMinus(false);
+            }
+            else if(k === 'AC'){
+                setLongS("0");
+                setShortS("");
+                setLastChar("");
+                setAnswer("0");
+                setHasDot(false);
+                setHasMinus(false);
+            }
+            else if(longS === '0'){
+                setLongS(k);
+                setShortS(k);
+                setAnswer(k);
+            }
+            else if(codeNumber.includes(k)){
+                setting(k);
+            }
+            else if(k === '.'){
+                // console.log(hasDot);
+                if(!hasDot){
+                    setting(k);
+                    setHasDot(!hasDot);
                 }
             }
-            else if(display.expression[display.expression.length - 1] === '.'){
-                return;
-            }else{
-                setDisplay({
-                    validExpression: false,
-                    expression: display.expression + keyPressed,
-                    answer: display.expression + keyPressed,
-                    decimalPossible: true
-                })
+            else if(k === '-'){
+                if(codeNumber.includes(lastChar)){
+                    setting(k);
+                }
+                else if(codeOperator.includes(lastChar)){
+                    if(!hasMinus){
+                        setting(k);
+                    }
+                    else{
+                        setLongS(longS+k);
+                        setShortS(shortS+k);
+                    }
+                }
+                setHasDot(false);
             }
-        }else{
-            if (display.expression === '0') {
-                setDisplay({
-                    validExpression: true,
-                    expression: keyPressed,
-                    answer: keyPressed
-                })
+            else if(codeOperator.includes(k)){
+                // console.log(k);
+                if(codeNumber.includes(lastChar)){
+                    setting(k);
+                }
+                else if(codeOperator.includes(lastChar)){
+                    setLongS(longS+k);
+                    setShortS(shortS+k);
+                    setAnswer(answer.slice(0,l-2)+k);
+                }
+                setShortS("");
+                setHasDot(false);
+                console.log(answer);
             }
-            else {
-                setDisplay({
-                    validExpression: true,
-                    expression: display.expression + keyPressed,
-                    answer: display.expression + keyPressed
-                })
+            else if(k === '='){
+                // console.log(k);
+                const finalAnswer = eval(answer);
+                console.log(answer + "=")
+                console.log(finalAnswer);
+                setLongS(finalAnswer);
+                setAnswer(answer + '=' + finalAnswer);
             }
-        }
+
+
+            setLastChar(k);
     }
 
     return(
         <div className="Calc">
-            <Display props={display} />
-            <Keys validExpression={display.validExpression} handleKey={handleKey} />
+            <Display answer={answer} longS={longS}/>
+            <Keys handleKey={handleKey} />
         </div>
     )
 }

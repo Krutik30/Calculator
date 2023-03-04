@@ -16,7 +16,7 @@ function Keys(props){
             <button className="key" onClick={props.handleKey} id="one" name="1">1</button>
             <button className="key" onClick={props.handleKey} id="two" name="2">2</button>
             <button className="key" onClick={props.handleKey} id="three" name="3">3</button>
-            <button className="key" onClick={props.handleKey} disabled={!props.validExpression} id="equals" name="=">=</button>
+            <button className="key" onClick={props.handleKey} id="equals" name="=">=</button>
             <button className="key" onClick={props.handleKey} id="zero" name="0">0</button>
             <button className="key" onClick={props.handleKey} id="decimal" name=".">.</button>
         </div>
